@@ -62,7 +62,7 @@ export default function TopBar() {
             href="tel:+212522319695"
             className="flex items-center gap-2 hover:text-white transition-colors"
           >
-            <Phone size={16} /> 05 22 31 96 95555
+            <Phone size={16} /> 05 22 31 96 95
           </a>
 
           <a
