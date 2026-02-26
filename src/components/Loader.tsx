@@ -1,135 +1,136 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 import Logo from "../assets/images/logo.webp";
 
-const waitForCriticalImages = (): Promise<void> => {
-  return new Promise((resolve) => {
-    const criticalImages = document.querySelectorAll("img");
-    
-    if (criticalImages.length === 0) {
-      resolve();
-      return;
-    }
+interface LoaderProps {
+  onComplete: () => void;
+}
 
-    let loadedCount = 0;
-    const total = criticalImages.length;
-
-    const onLoad = () => {
-      loadedCount++;
-      if (loadedCount >= total) {
-        resolve();
-      }
-    };
-
-    criticalImages.forEach((img) => {
-      if (img.complete && img.naturalHeight > 0) {
-        onLoad();
-      } else {
-        img.addEventListener("load", onLoad, { once: true });
-        img.addEventListener("error", onLoad, { once: true });
-      }
-    });
-
-    setTimeout(resolve, 2500);
-  });
-};
-
-export default function Loader({ onComplete }: { onComplete?: () => void }) {
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+export default function Loader({ onComplete }: LoaderProps) {
+  const [progress, setProgress] = useState<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const panelsRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const MIN_DURATION = 4000;
-    const startTime = Date.now();
-    let isComplete = false;
-
-    const checkComplete = async (): Promise<boolean> => {
-      if (isComplete) return true;
-      
-      if (document.readyState === "complete") {
-        isComplete = true;
-        await waitForCriticalImages();
-        
-        setProgress(100);
-        
-        setTimeout(() => {
-          setIsLoading(false);
-          onComplete?.();
-        }, 1000);
-        return true;
-      }
-      return false;
-    };
-
-    const updateProgress = () => {
-      const elapsed = Date.now() - startTime;
-      const timeProgress = Math.min((elapsed / MIN_DURATION) * 100, 95);
-      setProgress(timeProgress);
-    };
-
-    updateProgress();
+    // 1. Lock Scroll & Set Initial State
+    document.body.style.overflow = "hidden";
     
-    const interval = setInterval(() => {
-      checkComplete().then((done) => {
-        if (done) {
-          clearInterval(interval);
-        } else {
-          updateProgress();
-        }
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+
+      // Entrance of UI elements
+      tl.from(".loader-ui-item", {
+        y: 20,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power3.out",
       });
-    }, 100);
 
-    return () => clearInterval(interval);
-  }, [onComplete]);
+      // 2. Simulated Progress Logic
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          const step = Math.floor(Math.random() * 15) + 1;
+          return Math.min(prev + step, 100);
+        });
+      }, 150);
 
-  const radius = 70;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
+      return () => clearInterval(interval);
+    }, containerRef);
 
-  if (!isLoading) return null;
+    return () => ctx.revert();
+  }, []);
+
+  // 3. Trigger Exit only when progress hits 100
+  useEffect(() => {
+    if (progress === 100) {
+      const exitCtx = gsap.context(() => {
+        const exitTl = gsap.timeline({
+          delay: 0.5,
+          onComplete: () => {
+            document.body.style.overflow = "auto";
+            onComplete(); // This tells the App/Hero we are officially done
+          }
+        });
+
+        exitTl
+          .to(".loader-ui-item", {
+            y: -20,
+            opacity: 0,
+            stagger: 0.05,
+            duration: 0.5,
+            ease: "power2.in"
+          })
+          .to(".loader-panel", {
+            scaleY: 0,
+            stagger: 0.1,
+            duration: 1.2,
+            ease: "expo.inOut",
+            transformOrigin: "top",
+          }, "-=0.2");
+      }, containerRef);
+
+      return () => exitCtx.revert();
+    }
+  }, [progress, onComplete]);
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black z-[9999]" />
-      <div className="fixed inset-0 z-[10000] flex items-center justify-center">
-        <div className="relative flex items-center justify-center">
-          <svg
-            className="w-68 h-68 -rotate-90 drop-shadow-[0_0_20px_rgba(234,179,8,0.3)]"
-            viewBox="0 0 180 180"
-          >
-            <circle
-              cx="90"
-              cy="90"
-              r={radius}
-              fill="none"
-              stroke="oklch(0.2 0 0)"
-              strokeWidth="1"
-            />
-            <circle
-              cx="90"
-              cy="90"
-              r={radius}
-              fill="none"
-              stroke="var(--brand-yellow)"
-              strokeWidth="1"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              className="transition-all duration-100 ease-linear"
-            />
-          </svg>
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 ">
-            <img
-              src={Logo}
-              alt="Hammam Ziani"
-              className="w-24 h-24 object-contain"
-            />
-            <span className="text-xl font-primary text-white tracking-wider ">
-              {Math.round(progress)}%
+    <div
+      ref={containerRef}
+      data-loader-active={progress < 100 ? "true" : "false"}
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+    >
+      {/* Background Panels (Vertical Shutter) */}
+      <div ref={panelsRef} className="absolute inset-0 flex">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="loader-panel relative h-full w-full bg-[#0a0a0a] border-r border-white/[0.03] last:border-r-0"
+          />
+        ))}
+      </div>
+
+      {/* UI Content */}
+      <div className="relative z-10 flex flex-col items-center text-white">
+        <div className="loader-ui-item mb-10">
+          <img 
+            src={Logo} 
+            alt="Logo" 
+            className="h-16 lg:h-20 w-auto object-contain grayscale brightness-125" 
+          />
+        </div>
+
+        <div className="loader-ui-item flex flex-col items-center">
+          <div className="overflow-hidden">
+            <span 
+              ref={counterRef}
+              className="block text-[12vw] font-primary leading-none tabular-nums font-bold tracking-tighter italic text-brand-yellow"
+            >
+              {progress}%
             </span>
           </div>
+          
+          <div className="mt-6 flex items-center gap-4">
+             <div className="w-8 h-px bg-white/20" />
+             <span className="text-[10px] uppercase tracking-[0.8em] text-white/50">
+               Wellness Rituals
+             </span>
+             <div className="w-8 h-px bg-white/20" />
+          </div>
+        </div>
+
+        {/* Decorative footer details */}
+        <div className="loader-ui-item absolute -bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-12 opacity-30">
+           <span className="text-[9px] uppercase tracking-widest">Heritage Experience</span>
+           <span className="text-[9px] uppercase tracking-widest font-bold">●</span>
+           <span className="text-[9px] uppercase tracking-widest">Casablanca</span>
         </div>
       </div>
-    </>
+    </div>
   );
 }

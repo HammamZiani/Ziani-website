@@ -148,3 +148,8 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+body.loading {
+  overflow: hidden;
+  height: 100vh;
+}

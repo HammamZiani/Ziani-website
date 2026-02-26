@@ -10,14 +10,20 @@ import Gallery from "./sections/Galery";
 import Loader from "./components/Loader";
 
 function App() {
-  const [showContent, setShowContent] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let lastWidth = window.innerWidth;
+    // Lock scroll while loading
+    if (isLoading) {
+      document.body.classList.add("loading");
+    } else {
+      document.body.classList.remove("loading");
+    }
 
+    // Your existing resize logic
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
       const currentWidth = window.innerWidth;
-
       if (currentWidth !== lastWidth) {
         lastWidth = currentWidth;
         window.location.reload();
@@ -25,27 +31,26 @@ function App() {
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.body.classList.remove("loading");
     };
-  }, []);
+  }, [isLoading]);
 
   return (
     <>
-      <Loader onComplete={() => setShowContent(true)} />
-      {showContent && (
-        <main className="select-none">
-          <TopBar />
-          <Hero />
-          <About />
-          <Speciality />
-          <NosServices />
-          <Formules />
-          <BeautyCenter />
-          <Gallery />
-        </main>
-      )}
+      {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
+
+      <main className="select-none relative">
+        <TopBar />
+        <Hero isLoaded={!isLoading}/>
+        <About />
+        <Speciality />
+        <NosServices />
+        <Formules />
+        <BeautyCenter />
+        <Gallery />
+      </main>
     </>
   );
 }
