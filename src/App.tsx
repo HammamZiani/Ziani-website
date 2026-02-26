@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TopBar from "./components/TopBar";
 import About from "./sections/About";
 import BeautyCenter from "./sections/BeautyCenter";
@@ -10,14 +10,14 @@ import Gallery from "./sections/Galery";
 import Loader from "./components/Loader";
 
 function App() {
+  const [showContent, setShowContent] = useState(false);
+
   useEffect(() => {
     let lastWidth = window.innerWidth;
 
     const handleResize = () => {
       const currentWidth = window.innerWidth;
 
-      // Only reload if the WIDTH has changed
-      // This ignores the mobile address bar height changes
       if (currentWidth !== lastWidth) {
         lastWidth = currentWidth;
         window.location.reload();
@@ -30,19 +30,22 @@ function App() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <>
-      <Loader />
-      <main className="select-none">
-        <TopBar />
-        <Hero />
-        <About />
-        <Speciality />
-        <NosServices />
-        <Formules />
-        <BeautyCenter />
-        <Gallery />
-      </main>
+      <Loader onComplete={() => setShowContent(true)} />
+      {showContent && (
+        <main className="select-none">
+          <TopBar />
+          <Hero />
+          <About />
+          <Speciality />
+          <NosServices />
+          <Formules />
+          <BeautyCenter />
+          <Gallery />
+        </main>
+      )}
     </>
   );
 }
