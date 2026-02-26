@@ -1,0 +1,14 @@
+[
+  { "id": 1, "image": "/gallery/img1.jpeg" },
+  { "id": 2, "image": "/gallery/img2.jpeg" },
+  { "id": 3, "image": "/gallery/img3.jpeg" },
+  { "id": 4, "image": "/gallery/img4.jpeg" },
+  { "id": 5, "image": "/gallery/img5.jpeg" },
+  { "id": 6, "image": "/gallery/img6.jpeg" },
+  { "id": 7, "image": "/gallery/img7.jpeg" },
+  { "id": 8, "image": "/gallery/img8.jpeg" },
+  { "id": 9, "image": "/gallery/img9.jpeg" },
+  { "id": 10, "image": "/gallery/img10.jpeg" },
+  { "id": 11, "image": "/gallery/img11.jpeg" },
+  { "id": 12, "image": "/gallery/img12.jpeg" }
+]

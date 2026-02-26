@@ -1,0 +1,86 @@
+[
+  {
+    "id": 2,
+    "color": "brown",
+    "name": {
+      "fr": "Package Chocolat",
+      "en": "Chocolate Package"
+    },
+    "descriptions": {
+      "fr": [
+        "Entrée + Gommage",
+        "Savonnage",
+        "30 minutes de massage relaxant",
+        "Enveloppement au chocolat",
+        "Sortie de bain",
+        "Nécessaire de toilette"
+      ],
+      "en": [
+        "Entry + Exfoliation",
+        "Soaping",
+        "30 minutes relaxing massage",
+        "Chocolate wrap",
+        "Bath exit",
+        "Toiletries"
+      ]
+    },
+    "price": 400
+  },
+  {
+    "id": 3,
+    "color": "gold",
+    "isPopular": true,
+    "name": {
+      "fr": "Package Premium",
+      "en": "Premium Package"
+    },
+    "descriptions": {
+      "fr": [
+        "Entrée + Gommage",
+        "Savonnage",
+        "Une heure de massage",
+        "Enveloppement aux algues ou au chocolat",
+        "Masque éclat visage",
+        "Masque corporel hydratant",
+        "Sortie de bain + Nécessaire de toilette"
+      ],
+      "en": [
+        "Entry + Exfoliation",
+        "Soaping",
+        "One hour massage",
+        "Algae or chocolate wrap",
+        "Glowing face mask",
+        "Hydrating body mask",
+        "Bath exit + Toiletries"
+      ]
+    },
+    "price": 500
+  },
+  {
+    "id": 1,
+    "color": "green",
+    "name": {
+      "fr": "Package Algues",
+      "en": "Algae Package"
+    },
+    "descriptions": {
+      "fr": [
+        "Entrée + Gommage",
+        "Savonnage",
+        "30 minutes de massage relaxant",
+        "Algothérapie + Spécial dos",
+        "Sortie de bain",
+        "Nécessaire de toilette"
+      ],
+      "en": [
+        "Entry + Exfoliation",
+        "Soaping",
+        "30 minutes relaxing massage",
+        "Algae therapy + Special back",
+        "Bath exit",
+        "Toiletries"
+      ]
+    },
+    "price": 350
+  }
+]
