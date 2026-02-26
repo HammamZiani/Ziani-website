@@ -29,7 +29,7 @@ const waitForCriticalImages = (): Promise<void> => {
       }
     });
 
-    setTimeout(resolve, 3500);
+    setTimeout(resolve, 2500);
   });
 };
 
@@ -54,7 +54,7 @@ export default function Loader({ onComplete }: { onComplete?: () => void }) {
         setTimeout(() => {
           setIsLoading(false);
           onComplete?.();
-        }, 300);
+        }, 1000);
         return true;
       }
       return false;
@@ -102,7 +102,7 @@ export default function Loader({ onComplete }: { onComplete?: () => void }) {
               r={radius}
               fill="none"
               stroke="oklch(0.2 0 0)"
-              strokeWidth="6"
+              strokeWidth="1"
             />
             <circle
               cx="90"
@@ -110,7 +110,7 @@ export default function Loader({ onComplete }: { onComplete?: () => void }) {
               r={radius}
               fill="none"
               stroke="var(--brand-yellow)"
-              strokeWidth="6"
+              strokeWidth="1"
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
@@ -124,7 +124,7 @@ export default function Loader({ onComplete }: { onComplete?: () => void }) {
               alt="Hammam Ziani"
               className="w-24 h-24 object-contain"
             />
-            <span className="text-2xl font-primary text-white tracking-wider">
+            <span className="text-xl font-primary text-white tracking-wider ">
               {Math.round(progress)}%
             </span>
           </div>
