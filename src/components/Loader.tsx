@@ -1,41 +1,82 @@
 import { useEffect, useState } from "react";
 import Logo from "../assets/images/logo.webp";
 
+const waitForCriticalImages = (): Promise<void> => {
+  return new Promise((resolve) => {
+    const criticalImages = document.querySelectorAll("img");
+    
+    if (criticalImages.length === 0) {
+      resolve();
+      return;
+    }
+
+    let loadedCount = 0;
+    const total = criticalImages.length;
+
+    const onLoad = () => {
+      loadedCount++;
+      if (loadedCount >= total) {
+        resolve();
+      }
+    };
+
+    criticalImages.forEach((img) => {
+      if (img.complete && img.naturalHeight > 0) {
+        onLoad();
+      } else {
+        img.addEventListener("load", onLoad, { once: true });
+        img.addEventListener("error", onLoad, { once: true });
+      }
+    });
+
+    setTimeout(resolve, 3500);
+  });
+};
+
 export default function Loader({ onComplete }: { onComplete?: () => void }) {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const MIN_DURATION = 3000;
+    const MIN_DURATION = 4000;
     const startTime = Date.now();
-    let interval: ReturnType<typeof setInterval>;
+    let isComplete = false;
 
-    const checkComplete = () => {
-      const elapsed = Date.now() - startTime;
-      if (document.readyState === "complete" && elapsed >= MIN_DURATION) {
+    const checkComplete = async (): Promise<boolean> => {
+      if (isComplete) return true;
+      
+      if (document.readyState === "complete") {
+        isComplete = true;
+        await waitForCriticalImages();
+        
         setProgress(100);
-        clearInterval(interval);
+        
         setTimeout(() => {
           setIsLoading(false);
           onComplete?.();
-        }, 500);
+        }, 300);
         return true;
       }
       return false;
     };
 
-    if (!checkComplete()) {
-      interval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const timeProgress = Math.min((elapsed / MIN_DURATION) * 85, 85);
-        
-        setProgress(timeProgress);
+    const updateProgress = () => {
+      const elapsed = Date.now() - startTime;
+      const timeProgress = Math.min((elapsed / MIN_DURATION) * 100, 95);
+      setProgress(timeProgress);
+    };
 
-        if (checkComplete()) {
+    updateProgress();
+    
+    const interval = setInterval(() => {
+      checkComplete().then((done) => {
+        if (done) {
           clearInterval(interval);
+        } else {
+          updateProgress();
         }
-      }, 50);
-    }
+      });
+    }, 100);
 
     return () => clearInterval(interval);
   }, [onComplete]);
@@ -73,7 +114,7 @@ export default function Loader({ onComplete }: { onComplete?: () => void }) {
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
-              className="transition-all duration-75 ease-linear"
+              className="transition-all duration-100 ease-linear"
             />
           </svg>
           
