@@ -187,8 +187,6 @@ function CTAButton() {
 /* ---------------- IMAGE SIDE ---------------- */
 
 function ImageContent() {
-  const { t } = useI18n();
-
   return (
     <div className="relative order-1 w-full lg:order-2 lg:w-1/2">
       <div className="beauty-ui-fade absolute -top-4 -left-4 hidden h-full w-full border border-brand-yellow/30 md:block lg:-top-6 lg:-left-6" />
@@ -201,17 +199,6 @@ function ImageContent() {
             className="beauty-image-inner h-full w-full object-cover transition-transform duration-[3s] group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/5 transition-colors duration-700 group-hover:bg-transparent" />
-        </div>
-      </div>
-
-      <div className="beauty-ui-fade absolute -bottom-6 right-6 hidden bg-white border border-black/5 p-6 shadow-xl lg:block">
-        <div className="flex flex-col items-center gap-1">
-          <span className="font-primary text-3xl italic leading-none text-brand-yellow">
-            S
-          </span>
-          <span className="whitespace-nowrap text-[0.5rem] font-bold uppercase tracking-[0.4em] text-[#1a1a1a]/40">
-            {t("Beauty.premiumLabel")}
-          </span>
         </div>
       </div>
     </div>
