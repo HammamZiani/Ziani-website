@@ -53,6 +53,7 @@ export default function TopBar({
                 locale={l}
                 isActive={isActiveLocale(l)}
                 onClick={() => {
+                  if (l === locale) return;
                   onLanguageChange();
                   setLocale(l);
                 }}
