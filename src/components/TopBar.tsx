@@ -42,7 +42,7 @@ export default function TopBar() {
       <div className="flex items-center justify-between px-6 lg:px-20 py-3">
         {/* LEFT — Language (unchanged design) */}
         <div className="flex items-center gap-3">
-          <Globe className="text-red-500 size-5" />
+          <Globe className="text-blue-300 size-5" />
 
           <div className="flex bg-blue-950/50 p-1 rounded-full border border-blue-700/50 transition-all">
             {locales.map((l) => (
@@ -62,7 +62,7 @@ export default function TopBar() {
             href="tel:+212522319695"
             className="flex items-center gap-2 hover:text-white transition-colors"
           >
-            <Phone size={16} /> 05 22 31 96 95
+            <Phone size={16} /> 05 22 31 96 95555
           </a>
 
           <a
