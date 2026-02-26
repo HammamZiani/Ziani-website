@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Logo from "../assets/images/logo.webp";
 
 export default function Loader() {
   const [progress, setProgress] = useState(0);
@@ -73,7 +74,7 @@ export default function Loader() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 ">
           <img
-            src="/src/assets/images/logo.webp"
+            src={Logo}
             alt="Hammam Ziani"
             className="w-24 h-24 object-contain"
           />
