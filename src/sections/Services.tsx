@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Bglines from "../components/Bglines";
@@ -79,7 +77,10 @@ export default function NosServices() {
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="w-full overflow-hidden lg:w-[65%] cursor-grab" ref={emblaRef}>
+        <div
+          className="w-full overflow-hidden lg:w-[65%] cursor-grab"
+          ref={emblaRef}
+        >
           <div className="flex">
             {servicesData.map((service: ServiceData, index: number) => (
               <ServiceCard
