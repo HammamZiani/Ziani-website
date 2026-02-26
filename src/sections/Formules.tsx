@@ -1,43 +1,107 @@
+import { useRef, useEffect, type ReactNode } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ContainerWithBg from "../components/ContainerWithBg";
 import formules from "../data/formules.json";
 import { useI18n } from "../providers/useI18n";
 import SectionTitle from "../components/SectionTitle";
 
+gsap.registerPlugin(ScrollTrigger);
+
+/** * UTILITY: splitText
+ * Wraps words in masks to allow the "Hero" reveal effect.
+ */
+const splitText = (text: string | undefined): ReactNode[] => {
+  if (!text) return [];
+  return text.split(" ").map((word, i) => (
+    <span
+      key={`${word}-${i}`}
+      className="inline-flex overflow-hidden pb-1 mr-[0.2em]"
+    >
+      <span className="formula-reveal-word inline-block translate-y-[110%] opacity-0">
+        {word}
+      </span>
+    </span>
+  ));
+};
+
 interface FormulaData {
   id: number;
   color: string;
-  name: {
-    fr: string;
-    en: string;
-  };
-  descriptions: {
-    fr: string[];
-    en: string[];
-  };
+  name: { fr: string; en: string };
+  descriptions: { fr: string[]; en: string[] };
   price: number;
   isPopular?: boolean;
 }
 
-interface PackageCardProps {
-  pkg: FormulaData;
-  locale: "fr" | "en";
-  t: (k: string) => string;
-}
-
 export default function Formules() {
   const { t, locale } = useI18n();
+  const sectionRef = useRef<HTMLDivElement>(null);
   const currentLocale = locale as "fr" | "en";
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const words = sectionRef.current?.querySelectorAll(
+        ".formula-reveal-word",
+      );
+      const cards = sectionRef.current?.querySelectorAll(
+        ".formula-card-entrance",
+      );
+
+      if (!words?.length || !cards?.length) return;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%", // Trigger slightly earlier for better mobile flow
+          toggleActions: "play none none none",
+        },
+      });
+
+      // 1. Word-by-word reveal
+      tl.to(words, {
+        y: "0%",
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: "expo.out",
+      })
+        // 2. Card Entrance with cleanup
+        .fromTo(
+          cards,
+          {
+            y: 40, // Reduced offset to prevent mobile overflow
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.15,
+            ease: "power4.out",
+            clearProps: "transform", // CRITICAL: Removes GSAP transform after animation
+          },
+          "-=0.6",
+        );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [locale]);
 
   return (
     <ContainerWithBg>
-      <section className="px-6 py-24 md:px-12 lg:px-24 lg:py-32">
+      {/* overflow-hidden prevents the "white gap" during animation */}
+      <section
+        ref={sectionRef}
+        className="relative overflow-hidden px-6 py-24 md:px-12 lg:px-24 lg:py-32"
+      >
         <div className="mx-auto max-w-[1400px]">
           {/* HEADER */}
           <div className="mb-16 text-center md:mb-20 lg:mb-24">
             <SectionTitle
-              small={t("Formulas.label")}
-              title={t("SectionTitle.our")}
-              accent={t("SectionTitle.formulas")}
+              small={splitText(t("Formulas.label")) as any}
+              title={splitText(t("SectionTitle.our")) as any}
+              accent={splitText(t("SectionTitle.formulas")) as any}
               className="font-primary uppercase leading-tight text-white text-6xl lg:text-7xl"
               smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-brand-yellow"
             />
@@ -62,14 +126,22 @@ export default function Formules() {
 
 /* ---------------- PACKAGE CARD ---------------- */
 
+interface PackageCardProps {
+  pkg: FormulaData;
+  locale: "fr" | "en";
+  t: (k: string) => string;
+}
+
 function PackageCard({ pkg, locale, t }: PackageCardProps) {
   const popular = pkg.isPopular;
 
   return (
     <div
       className={`
+        formula-card-entrance
+        opacity-0 will-change-transform
         relative flex w-full flex-col border p-8 backdrop-blur-xl transition-all duration-500
-        bg-[#0a1a2f]/40
+        bg-[#0a1a2f]/40 group
         ${
           popular
             ? "border-brand-yellow md:-translate-y-6 md:scale-105 z-20 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
@@ -105,7 +177,7 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
       {/* LIST */}
       <div className="relative z-10 flex-grow">
         <ul className="space-y-4">
-          {pkg.descriptions[locale]?.map((item: string) => (
+          {(pkg.descriptions[locale] || []).map((item: string) => (
             <li
               key={item}
               className="flex items-start gap-4 text-[0.68rem] uppercase tracking-[0.15em] leading-relaxed text-white/90 lg:text-[0.75rem]"
@@ -126,7 +198,6 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <span>{item}</span>
             </li>
           ))}
@@ -141,10 +212,9 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
             ${
               popular
                 ? "bg-brand-yellow text-black border-brand-yellow hover:bg-transparent hover:text-brand-yellow"
-                : "border-white/20 text-white hover:text-white "
+                : "border-white/20 text-white hover:border-white"
             }
           `}
-          style={!popular ? { borderColor: "rgba(255,255,255,0.2)" } : {}}
         >
           {t("Booking.submit")}
         </button>
