@@ -7,10 +7,10 @@ import Hero from "./sections/Hero";
 import NosServices from "./sections/Services";
 import Speciality from "./sections/Speciality";
 import Gallery from "./sections/Galery";
+import Loader from "./components/Loader";
 
 function App() {
   useEffect(() => {
-    // Store the initial width
     let lastWidth = window.innerWidth;
 
     const handleResize = () => {
@@ -31,16 +31,19 @@ function App() {
     };
   }, []);
   return (
-    <main className="select-none">
-      <TopBar />
-      <Hero />
-      <About />
-      <Speciality />
-      <NosServices />
-      <Formules />
-      <BeautyCenter />
-      <Gallery />
-    </main>
+    <>
+      <Loader />
+      <main className="select-none">
+        <TopBar />
+        <Hero />
+        <About />
+        <Speciality />
+        <NosServices />
+        <Formules />
+        <BeautyCenter />
+        <Gallery />
+      </main>
+    </>
   );
 }
 
