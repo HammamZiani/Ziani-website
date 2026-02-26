@@ -47,7 +47,7 @@ function TextContent() {
       </div>
 
       {/* Info + CTA */}
-      <div className="mt-10 flex  gap-8 flex-row items-center justify-between lg:mt-12">
+      <div className="mt-10 flex flex-row items-center justify-between lg:mt-12">
         <OpeningHours />
         <CTAButton />
       </div>
@@ -84,7 +84,7 @@ function OpeningHours() {
       <span className="mb-1 text-[0.6rem] font-bold uppercase tracking-[0.3em] text-[#1a1a1a]/40">
         {t("Beauty.open")}
       </span>
-      <span className="font-primary text-lg tracking-widest text-[#1a1a1a] sm:text-xl">
+      <span className="font-primary text-md tracking-widest text-[#1a1a1a] sm:text-xl">
         {t("Beauty.hours")}
       </span>
     </div>

@@ -83,7 +83,7 @@ export default function Loader({ onComplete }: LoaderProps) {
     <div
       ref={containerRef}
       data-loader-active={progress < 100 ? "true" : "false"}
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden select-none"
     >
       {/* Background Panels (Vertical Shutter) */}
       <div ref={panelsRef} className="absolute inset-0 flex">
