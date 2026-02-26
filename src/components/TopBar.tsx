@@ -48,7 +48,9 @@ export default function TopBar() {
                 key={l}
                 locale={l}
                 isActive={isActiveLocale(l)}
-                onClick={() => setLocale(l)}
+                onClick={() => {
+                  (window.location.reload(), setLocale(l));
+                }}
               />
             ))}
           </div>

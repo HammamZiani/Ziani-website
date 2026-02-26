@@ -53,6 +53,7 @@ export default function Hero({ isLoaded }: HeroProps) {
           clipPath: "inset(0 0% 0 0)",
           scale: 1,
           duration: 1.6,
+          opacity: 1,
           ease: "expo.inOut",
         },
         "-=0.9",
@@ -135,7 +136,7 @@ export default function Hero({ isLoaded }: HeroProps) {
           </div>
 
           <div className="flex items-center justify-center lg:col-start-2 lg:row-span-2 lg:justify-end">
-            <div className="relative aspect-4/5 w-full max-w-90 sm:max-w-120 md:max-w-137.5 lg:max-w-none lg:w-[92%] xl:w-[88%] hero-image">
+            <div className="relative aspect-4/5 w-full max-w-90 sm:max-w-120 md:max-w-137.5 lg:max-w-none lg:w-[92%] xl:w-[88%] hero-image opacity-0">
               <div className="relative h-full w-full overflow-hidden shadow-[0_50px_120px_rgba(0,0,0,0.85)]">
                 <img
                   src={HeroImage}
