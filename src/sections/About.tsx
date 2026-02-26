@@ -73,7 +73,7 @@ export default function About() {
 
 function BathCard({ img, title, desc, num }: BathItem) {
   return (
-    <article className="group flex h-full cursor-pointer flex-col">
+    <article className="group flex h-full flex-col">
       {/* Image */}
       <div className="relative mb-6 aspect-[3/4] max-h-[550px] overflow-hidden bg-gray-50 shadow-sm">
         <img
