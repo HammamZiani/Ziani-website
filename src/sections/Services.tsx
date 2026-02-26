@@ -169,10 +169,9 @@ function ServiceCard({ service, active, locale }: ServiceCardProps) {
         />
 
         <div className="absolute inset-0 z-20 flex flex-col justify-between p-6 sm:p-8 md:p-10">
+          <div className="bg-linear-to-t from-black/90 to to-transparent h-[50%] absolute bottom-0 left-0 w-full "/>
           <div className="flex items-start justify-between">
-            <span className="border border-white/20 bg-white/10 px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.5em] text-[#C6A75E] backdrop-blur-md">
-              {service.category}
-            </span>
+        
             <span className="font-primary text-4xl italic text-white/20 sm:text-5xl">
               0{service.id}
             </span>
@@ -184,7 +183,7 @@ function ServiceCard({ service, active, locale }: ServiceCardProps) {
             <h3 className="mb-4 font-primary text-2xl uppercase leading-none text-white sm:text-3xl md:text-4xl">
               {service.name[locale]}
             </h3>
-            <p className="mb-6 max-w-xs text-[0.7rem] uppercase tracking-widest leading-relaxed text-white/70">
+            <p className="mb-6 max-w-xs text-[0.7rem] uppercase tracking-widest leading-relaxed text-white/80">
               {service.description[locale]}
             </p>
             <div className="flex cursor-pointer items-center gap-4 text-[#C6A75E]">
