@@ -11,6 +11,10 @@ import Loader from "./components/Loader";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  // Function to trigger the loader "reload"
+  const reloadLoader = () => {
+    setIsLoading(true);
+  };
 
   useEffect(() => {
     // Lock scroll while loading
@@ -42,7 +46,7 @@ function App() {
       {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
 
       <main className="select-none relative">
-        <TopBar />
+        <TopBar onLanguageChange={reloadLoader}/>
         <Hero isLoaded={!isLoading}/>
         <About />
         <Speciality />

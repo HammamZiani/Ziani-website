@@ -29,7 +29,11 @@ function LocaleButton({
   );
 }
 
-export default function TopBar() {
+export default function TopBar({
+  onLanguageChange,
+}: {
+  onLanguageChange: () => void;
+}) {
   const { locale, setLocale } = useI18n();
 
   const isActiveLocale = (l: (typeof locales)[number]) => locale === l;
@@ -49,7 +53,8 @@ export default function TopBar() {
                 locale={l}
                 isActive={isActiveLocale(l)}
                 onClick={() => {
-                  (window.location.reload(), setLocale(l));
+                  onLanguageChange();
+                  setLocale(l);
                 }}
               />
             ))}
