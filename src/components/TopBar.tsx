@@ -21,9 +21,7 @@ function LocaleButton({
     <button
       onClick={onClick}
       className={`px-3 py-0.5 rounded-full transition-all cursor-pointer ${
-        isActive
-          ? "bg-blue-500 text-white"
-          : "text-blue-300 hover:text-white"
+        isActive ? "bg-blue-500 text-white" : "text-blue-300 hover:text-white"
       }`}
     >
       {locale.toUpperCase()}
@@ -72,7 +70,13 @@ export default function TopBar() {
             <Mail size={16} /> Hammamziani@yahoo.com
           </a>
         </div>
+        {/* Mobile contact row (only shows on small screens) */}
 
+        <div className="md:hidden text-[0.75rem]">
+          <a href="tel:+212522319695" className="flex items-center gap-2">
+            <Phone size={14} /> 05 22 31 96 95
+          </a>
+        </div>
         {/* RIGHT — Social Icons (unchanged visually) */}
         <div className="flex items-center gap-2">
           <a href="#" className="hover:opacity-80 transition-opacity">
@@ -87,13 +91,6 @@ export default function TopBar() {
             <img src={InstagramIcon} alt="Instagram" className="size-8" />
           </a>
         </div>
-      </div>
-
-      {/* Mobile contact row (only shows on small screens) */}
-      <div className="md:hidden flex items-center justify-center gap-6 pb-3 text-[0.75rem] text-blue-100">
-        <a href="tel:+212522319695" className="flex items-center gap-2">
-          <Phone size={14} /> 05 22 31 96 95
-        </a>
       </div>
     </div>
   );
