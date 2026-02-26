@@ -47,7 +47,7 @@ function TextContent() {
       </div>
 
       {/* Info + CTA */}
-      <div className="mt-10 flex  gap-8 sm:flex-row sm:items-center sm:gap-12 lg:mt-12">
+      <div className="mt-10 flex  gap-8 flex-row items-center justify-between lg:mt-12">
         <OpeningHours />
         <CTAButton />
       </div>
