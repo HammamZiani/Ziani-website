@@ -10,6 +10,7 @@ import SectionTitle from "../components/SectionTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
+
 /** * UTILITY: splitText */
 const splitText = (text: string | undefined): ReactNode[] => {
   if (!text) return [];
