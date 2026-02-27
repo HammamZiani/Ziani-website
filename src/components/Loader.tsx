@@ -1,104 +1,114 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import Logo from "../assets/images/logo.webp";
+
+gsap.registerPlugin(useGSAP);
 
 interface LoaderProps {
   onComplete: () => void;
 }
 
 export default function Loader({ onComplete }: LoaderProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const counterRef = useRef<HTMLSpanElement | null>(null);
 
-  useEffect(() => {
-    // 1. Lock Scroll & Initial State
-    document.body.style.overflow = "hidden";
+  // Store elements safely (no mutation issues)
+  const panelsRef = useRef<HTMLDivElement[]>([]);
+  const uiItemsRef = useRef<HTMLDivElement[]>([]);
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline();
+  useGSAP(
+    () => {
+      if (!counterRef.current) return;
 
-      // UI Entrance
-      tl.from(".loader-ui-item", {
-        y: 20,
+      document.body.style.overflow = "hidden";
+
+      const progressObj = { value: 0 };
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+      });
+
+      // Entrance
+      tl.from(uiItemsRef.current, {
+        y: 32,
         opacity: 0,
-        stagger: 0.1,
+        stagger: 0.08,
         duration: 0.8,
-        ease: "power3.out",
       });
 
-      // 2. Direct DOM Counter Animation (No React State Lag)
-      const counterObj = { value: 0 };
-      tl.to(counterObj, {
+      // Smooth progress animation (no React state)
+      tl.to(progressObj, {
         value: 100,
-        duration: 2.5,
-        ease: "power2.inOut",
+        duration: 2.4,
+        ease: "power2.out",
         onUpdate: () => {
-          if (counterRef.current) {
-            counterRef.current.innerText =
-              Math.floor(counterObj.value).toString() + "%";
-          }
+          counterRef.current!.textContent = `${Math.floor(progressObj.value)}%`;
         },
-        // 3. Trigger Exit Sequence automatically
-        onComplete: () => playExit(),
       });
 
-      const playExit = () => {
-        const exitTl = gsap.timeline({
-          onStart: () => {
-            // UNLOCK SCROLL EARLY
+      // Exit UI
+      tl.to(
+        uiItemsRef.current,
+        {
+          y: -24,
+          opacity: 0,
+          stagger: 0.05,
+          duration: 0.45,
+          ease: "power2.in",
+          onComplete: () => {
             document.body.style.overflow = "auto";
-            // Start Hero reveal 300ms before panels finish
-            gsap.delayedCall(0.3, onComplete);
           },
-        });
+        },
+        "+=0.2",
+      );
 
-        exitTl
-          .to(".loader-ui-item", {
-            y: -30,
-            opacity: 0,
-            stagger: 0.05,
-            duration: 0.5,
-            ease: "power2.in",
-          })
-          .to(
-            ".loader-panel",
-            {
-              scaleY: 0,
-              stagger: 0.1,
-              duration: 1.2,
-              ease: "expo.inOut",
-              transformOrigin: "top",
-            },
-            "-=0.3",
-          )
-          .set(containerRef.current, { display: "none" });
-      };
-    }, containerRef);
-
-    return () => {
-      ctx.revert();
-      // Safety unlock if component unmounts unexpectedly
-      document.body.style.overflow = "auto";
-    };
-  }, [onComplete]);
+      // Panel shutter animation
+      tl.to(
+        panelsRef.current,
+        {
+          scaleY: 0,
+          transformOrigin: "top",
+          stagger: 0.08,
+          duration: 1.1,
+          ease: "expo.inOut",
+          onComplete: () => {
+            onComplete();
+          },
+        },
+        "-=0.2",
+      );
+    },
+    { scope: containerRef },
+  );
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden select-none bg-black"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden select-none"
     >
-      {/* Background Panels */}
+      {/* Panels */}
       <div className="absolute inset-0 flex">
-        {[...Array(5)].map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
-            className="loader-panel relative h-full w-full bg-[#0a0a0a] border-r border-white/[0.03] last:border-r-0"
+            ref={(el) => {
+              if (el) panelsRef.current[i] = el;
+            }}
+            className="h-full w-full bg-[#0a0a0a] border-r border-white/[0.03] last:border-r-0"
           />
         ))}
       </div>
 
+      {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-white">
-        <div className="loader-ui-item mb-10">
+        {/* Logo */}
+        <div
+          ref={(el) => {
+            if (el) uiItemsRef.current[0] = el;
+          }}
+          className="mb-10"
+        >
           <img
             src={Logo}
             alt="Logo"
@@ -106,7 +116,13 @@ export default function Loader({ onComplete }: LoaderProps) {
           />
         </div>
 
-        <div className="loader-ui-item flex flex-col items-center">
+        {/* Counter */}
+        <div
+          ref={(el) => {
+            if (el) uiItemsRef.current[1] = el;
+          }}
+          className="flex flex-col items-center"
+        >
           <div className="overflow-hidden">
             <span
               ref={counterRef}
@@ -125,7 +141,13 @@ export default function Loader({ onComplete }: LoaderProps) {
           </div>
         </div>
 
-        <div className="loader-ui-item absolute -bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-12 opacity-30">
+        {/* Footer */}
+        <div
+          ref={(el) => {
+            if (el) uiItemsRef.current[2] = el;
+          }}
+          className="absolute -bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-12 opacity-30"
+        >
           <span className="text-[9px] uppercase tracking-widest">
             Heritage Experience
           </span>
