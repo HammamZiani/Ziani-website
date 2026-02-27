@@ -1,27 +1,33 @@
+import type { ReactNode } from "react";
+import { cn } from "../lib/utils";
+
+interface SectionTitleProps {
+  small?: ReactNode;
+  title: ReactNode;
+  accent?: ReactNode;
+  smallClass?: string;
+  smallDevClass?: string;
+  className?: string;
+}
+
 export default function SectionTitle({
   small,
   title,
   accent,
-  smallClass = "text-[0.65rem] uppercase tracking-[0.5em] font-bold text-brand-yellow",
-  className = "font-primary text-4xl uppercase tracking-tighter text-white",
-}: {
-  small?: string;
-  title: string;
-  accent?: string;
-  smallClass?: string;
-  className?: string;
-}) {
+  smallClass,
+  className,
+  smallDevClass,
+}: SectionTitleProps) {
   return (
-    <div className="mb-6 text-center md:mb-8 lg:mb-10">
+    <div>
       {small && (
-        <div className="mb-4 flex items-center justify-center gap-3">
-          <div className="h-px w-10 bg-brand-yellow" />
-          <span className={smallClass}>{small}</span>
+        <div className={cn("flex items-center gap-2 mb-2 ", smallDevClass)}>
+          <div className="h-[0.5px] w-8 bg-brand-yellow " />
+          <p className={cn("", smallClass)}>{small}</p>
         </div>
       )}
-
       <h2 className={className}>
-        {title}{" "}
+        {title}
         {accent && (
           <span className="italic font-light lowercase text-brand-yellow">
             {accent}

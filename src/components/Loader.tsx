@@ -62,7 +62,6 @@ export default function Loader({ onComplete }: LoaderProps) {
         },
         "+=0.2",
       );
-
       // Panel shutter animation
       tl.to(
         panelsRef.current,

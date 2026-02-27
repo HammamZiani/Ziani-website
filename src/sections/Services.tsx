@@ -3,20 +3,18 @@ import {
   useCallback,
   useState,
   useRef,
-  type ReactNode,
 } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Bglines from "../components/Bglines";
 import SectionTitle from "../components/SectionTitle";
+import SplitText from "../components/SplitText";
 import servicesData from "../data/services.json";
 import { useI18n } from "../providers/useI18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** * TYPES
- */
 interface ServiceData {
   id: number;
   image: string;
@@ -37,31 +35,12 @@ interface ServiceCardProps {
   locale: "fr" | "en";
 }
 
-/** * UTILITY: splitText
- * Returns ReactNode[] to be compatible with SectionTitle props
- */
-const splitText = (text: string): ReactNode[] =>
-  text.split(" ").map((word, i) => (
-    <span
-      key={`${word}-${i}`}
-      className="inline-flex overflow-hidden pb-1 mr-[0.3em]"
-    >
-      <span className="service-reveal-word inline-block translate-y-full opacity-0">
-        {word}
-      </span>
-    </span>
-  ));
-
 export default function NosServices() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { t, locale } = useI18n();
   const currentLocale = locale as "fr" | "en";
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-  });
-
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const onSelect = useCallback(() => {
@@ -77,11 +56,12 @@ export default function NosServices() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const words = sectionRef.current?.querySelectorAll(
-        ".service-reveal-word",
-      );
+      const words = sectionRef.current?.querySelectorAll(".service-reveal-word");
+      if (words?.length) gsap.set(words, { y: "100%", opacity: 0 });
       const cards = sectionRef.current?.querySelectorAll(".service-card-mask");
+
       if (!words || !cards || words.length === 0) return;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -122,10 +102,9 @@ export default function NosServices() {
       <div className="flex flex-col gap-16 lg:flex-row lg:items-center">
         <div className="w-full lg:w-[35%]">
           <SectionTitle
-            // Now passing ReactNode instead of string
-            small={splitText(t("Services.label")) as any}
-            title={splitText(t("SectionTitle.our")) as any}
-            accent={splitText(t("SectionTitle.services")) as any}
+            small={<SplitText text={t("Services.label")} wordClass="service-reveal-word" />}
+            title={<SplitText text={t("SectionTitle.our")} wordClass="service-reveal-word" />}
+            accent={<SplitText text={t("SectionTitle.services")} wordClass="service-reveal-word" />}
             className="mb-8 font-primary uppercase leading-[0.9] tracking-tighter text-6xl lg:text-7xl"
             smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-black/40"
           />
@@ -169,16 +148,17 @@ function ServiceCard({ service, active, locale }: ServiceCardProps) {
         />
 
         <div className="absolute inset-0 z-20 flex flex-col justify-between p-6 sm:p-8 md:p-10">
-          <div className="bg-linear-to-t from-black/90 to to-transparent h-[50%] absolute bottom-0 left-0 w-full "/>
+          <div className="bg-linear-to-t from-black/90 to-transparent h-[50%] absolute bottom-0 left-0 w-full" />
           <div className="flex items-start justify-between">
-        
             <span className="font-primary text-4xl italic text-white/20 sm:text-5xl">
               0{service.id}
             </span>
           </div>
 
           <div
-            className={`transition-all duration-700 ${active ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
+            className={`transition-all duration-700 ${
+              active ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
           >
             <h3 className="mb-4 font-primary text-2xl uppercase leading-none text-white sm:text-3xl md:text-4xl">
               {service.name[locale]}
@@ -194,8 +174,11 @@ function ServiceCard({ service, active, locale }: ServiceCardProps) {
             </div>
           </div>
         </div>
+
         <div
-          className={`absolute bottom-0 left-0 h-1 w-full origin-left bg-[#1e3a8a] transition-transform duration-1000 ${active ? "scale-x-100" : "scale-x-0"}`}
+          className={`absolute bottom-0 left-0 h-1 w-full origin-left bg-[#1e3a8a] transition-transform duration-1000 ${
+            active ? "scale-x-100" : "scale-x-0"
+          }`}
         />
       </div>
     </div>

@@ -24,30 +24,10 @@ export default function About() {
 
   const ITEMS: BathItem[] = useMemo(
     () => [
-      {
-        img: Bath1,
-        title: t("Baths.salam"),
-        desc: t("Baths.salamDesc"),
-        num: "01",
-      },
-      {
-        img: Bath2,
-        title: t("Baths.istanbul"),
-        desc: t("Baths.istanbulDesc"),
-        num: "02",
-      },
-      {
-        img: Bath3,
-        title: t("Baths.orient"),
-        desc: t("Baths.orientDesc"),
-        num: "03",
-      },
-      {
-        img: Bath4,
-        title: t("Baths.individuel"),
-        desc: t("Baths.individuelDesc"),
-        num: "04",
-      },
+      { img: Bath1, title: t("Baths.salam"), desc: t("Baths.salamDesc"), num: "01" },
+      { img: Bath2, title: t("Baths.istanbul"), desc: t("Baths.istanbulDesc"), num: "02" },
+      { img: Bath3, title: t("Baths.orient"), desc: t("Baths.orientDesc"), num: "03" },
+      { img: Bath4, title: t("Baths.individuel"), desc: t("Baths.individuelDesc"), num: "04" },
     ],
     [t],
   );
@@ -56,7 +36,6 @@ export default function About() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // 2. Animate Section Title
       gsap.from(".about-title", {
         scrollTrigger: {
           trigger: ".about-title",
@@ -69,10 +48,8 @@ export default function About() {
         ease: "power4.out",
       });
 
-      // 3. Animate Cards via clipPath
       const cards = gsap.utils.toArray<HTMLElement>(".bath-card");
 
-      // Removed 'i' here to fix TS6133
       cards.forEach((card) => {
         const imageWrap = card.querySelector(".card-image-wrap");
         const imageInner = card.querySelector(".card-image-inner");
@@ -96,24 +73,10 @@ export default function About() {
           duration: 1.4,
           ease: "expo.inOut",
         })
-          .to(
-            imageInner,
-            {
-              scale: 1,
-              duration: 1.8,
-              ease: "expo.out",
-            },
-            "-=1.1",
-          )
+          .to(imageInner, { scale: 1, duration: 1.8, ease: "expo.out" }, "-=1.1")
           .from(
             contentItems,
-            {
-              y: 20,
-              opacity: 0,
-              duration: 0.8,
-              stagger: 0.1,
-              ease: "power3.out",
-            },
+            { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" },
             "-=1.0",
           );
       });

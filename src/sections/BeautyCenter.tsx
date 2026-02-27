@@ -1,27 +1,12 @@
-import { useMemo, useEffect, useRef, type ReactNode } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Bglines from "../components/Bglines";
 import { useI18n } from "../providers/useI18n";
 import SectionTitle from "../components/SectionTitle";
+import SplitText from "../components/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
-
-/** * UTILITY: splitText
- */
-const splitText = (text: string | undefined): ReactNode[] => {
-  if (!text) return [];
-  return text.split(" ").map((word, i) => (
-    <span
-      key={`${word}-${i}`}
-      className="inline-flex overflow-hidden pb-1 mr-[0.3em]"
-    >
-      <span className="beauty-reveal-word inline-block translate-y-[110%] opacity-0">
-        {word}
-      </span>
-    </span>
-  ));
-};
 
 export default function BeautyCenter() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -30,12 +15,10 @@ export default function BeautyCenter() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const words = sectionRef.current?.querySelectorAll(".beauty-reveal-word");
+      if (words?.length) gsap.set(words, { y: "100%", opacity: 0 });
       const imageWrap = sectionRef.current?.querySelector(".beauty-image-wrap");
-      const imageInner = sectionRef.current?.querySelector(
-        ".beauty-image-inner",
-      );
-      const uiElements =
-        sectionRef.current?.querySelectorAll(".beauty-ui-fade");
+      const imageInner = sectionRef.current?.querySelector(".beauty-image-inner");
+      const uiElements = sectionRef.current?.querySelectorAll(".beauty-ui-fade");
 
       if (!words || !imageWrap || !imageInner || !uiElements) return;
 
@@ -56,7 +39,7 @@ export default function BeautyCenter() {
       })
         .fromTo(
           imageWrap,
-          { clipPath: "inset(0 0 100% 0)" }, // Reveals from top down
+          { clipPath: "inset(0 0 100% 0)" },
           { clipPath: "inset(0 0 0% 0)", duration: 1.6, ease: "expo.inOut" },
           "-=1.2",
         )
@@ -69,14 +52,7 @@ export default function BeautyCenter() {
         .fromTo(
           uiElements,
           { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            stagger: 0.1,
-            ease: "power3.out",
-            clearProps: "all",
-          },
+          { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power3.out", clearProps: "all" },
           "-=1.0",
         );
     }, sectionRef);
@@ -109,16 +85,16 @@ function TextContent() {
   return (
     <div className="order-2 w-full lg:order-1 lg:w-1/2">
       <SectionTitle
-        small={splitText(t("Beauty.label")) as any}
-        title={splitText(t("Beauty.title")) as any}
-        accent={splitText(t("Beauty.titleSpan")) as any}
+        small={<SplitText text={t("Beauty.label")} wordClass="beauty-reveal-word" />}
+        title={<SplitText text={t("Beauty.title")} wordClass="beauty-reveal-word" />}
+        accent={<SplitText text={t("Beauty.titleSpan")} wordClass="beauty-reveal-word" />}
         className="mb-6 font-primary uppercase leading-[0.95] text-6xl lg:text-7xl"
         smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-black/40"
       />
 
       <div className="max-w-lg space-y-6">
-        <p className="text-sm leading-relaxed tracking-wide text-[#1a1a1a]/70 md:text-base">
-          {splitText(t("Beauty.description"))}
+        <p className="beauty-ui-fade text-sm leading-relaxed tracking-wide text-[#1a1a1a]/70 md:text-base">
+          {t("Beauty.description")}
         </p>
 
         <div className="beauty-ui-fade">

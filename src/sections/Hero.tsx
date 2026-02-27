@@ -5,22 +5,11 @@ import ContainerWithBg from "../components/ContainerWithBg";
 import Logo from "../assets/images/logo.webp";
 import HeroImage from "../assets/images/bath1.jpeg";
 import { useI18n } from "../providers/useI18n";
+import SplitText from "../components/SplitText";
 
 interface HeroProps {
   isLoaded: boolean;
 }
-
-const splitText = (text: string) =>
-  text.split(" ").map((word, i) => (
-    <span
-      key={`${word}-${i}`}
-      className="inline-flex overflow-hidden pb-1 mr-[0.3em]"
-    >
-      <span className="reveal-word inline-block translate-y-full opacity-0">
-        {word}
-      </span>
-    </span>
-  ));
 
 export default function Hero({ isLoaded }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +75,7 @@ export default function Hero({ isLoaded }: HeroProps) {
         className="relative flex min-h-screen w-full flex-col overflow-hidden"
       >
         <header className="absolute top-6 left-1/2 z-50 w-full max-w-400 -translate-x-1/2 px-6 lg:top-10 lg:px-12">
-          <div className="text-center">
+          <div className="text-center ">
             <img src={Logo} alt="Logo" className="mx-auto h-24" />
           </div>
           <nav className="mt-6 hidden lg:block">
@@ -123,14 +112,15 @@ export default function Hero({ isLoaded }: HeroProps) {
                 </span>
               </div>
               <h1 className="font-primary text-4xl uppercase leading-[0.92] tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-[4vw]">
-                {splitText(t("Hero.h1.part1"))} <br />
+                <SplitText text={t("Hero.h1.part1")} />
+                <br />
                 <span className="italic font-light lowercase text-brand-yellow">
-                  {splitText(t("Hero.h1.part2"))}
+                  <SplitText text={t("Hero.h1.part2")} />
                 </span>
-                {splitText(t("Hero.h1.part3"))}
+                <SplitText text={t("Hero.h1.part3")} />
               </h1>
               <p className="max-w-2xl font-primary text-base uppercase leading-relaxed tracking-wide text-white/90 sm:text-lg lg:text-[1.05vw]">
-                {splitText(t("Hero.tagline"))}
+                <SplitText text={t("Hero.tagline")} />
               </p>
             </div>
           </div>

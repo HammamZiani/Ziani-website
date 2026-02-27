@@ -1,29 +1,13 @@
-import { useRef, useEffect, type ReactNode } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ContainerWithBg from "../components/ContainerWithBg";
 import formules from "../data/formules.json";
 import { useI18n } from "../providers/useI18n";
 import SectionTitle from "../components/SectionTitle";
+import SplitText from "../components/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
-
-/** * UTILITY: splitText
- * Wraps words in masks to allow the "Hero" reveal effect.
- */
-const splitText = (text: string | undefined): ReactNode[] => {
-  if (!text) return [];
-  return text.split(" ").map((word, i) => (
-    <span
-      key={`${word}-${i}`}
-      className="inline-flex overflow-hidden pb-1 mr-[0.2em]"
-    >
-      <span className="formula-reveal-word inline-block translate-y-[110%] opacity-0">
-        {word}
-      </span>
-    </span>
-  ));
-};
 
 interface FormulaData {
   id: number;
@@ -44,6 +28,7 @@ export default function Formules() {
       const words = sectionRef.current?.querySelectorAll(
         ".formula-reveal-word",
       );
+      if (words?.length) gsap.set(words, { y: "100%", opacity: 0 });
       const cards = sectionRef.current?.querySelectorAll(
         ".formula-card-entrance",
       );
@@ -53,36 +38,30 @@ export default function Formules() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%", // Trigger slightly earlier for better mobile flow
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
 
-      // 1. Word-by-word reveal
       tl.to(words, {
         y: "0%",
         opacity: 1,
         duration: 0.8,
         stagger: 0.02,
         ease: "expo.out",
-      })
-        // 2. Card Entrance with cleanup
-        .fromTo(
-          cards,
-          {
-            y: 40, // Reduced offset to prevent mobile overflow
-            opacity: 0,
-          },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            stagger: 0.15,
-            ease: "power4.out",
-            clearProps: "transform", // CRITICAL: Removes GSAP transform after animation
-          },
-          "-=0.6",
-        );
+      }).fromTo(
+        cards,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.15,
+          ease: "power4.out",
+          clearProps: "transform",
+        },
+        "-=0.6",
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -90,24 +69,37 @@ export default function Formules() {
 
   return (
     <ContainerWithBg>
-      {/* overflow-hidden prevents the "white gap" during animation */}
       <section
         ref={sectionRef}
         className="relative overflow-hidden px-6 py-24 md:px-12 lg:px-24 lg:py-32"
       >
         <div className="mx-auto max-w-[1400px]">
-          {/* HEADER */}
           <div className="mb-16 text-center md:mb-20 lg:mb-24">
             <SectionTitle
-              small={splitText(t("Formulas.label")) as any}
-              title={splitText(t("SectionTitle.our")) as any}
-              accent={splitText(t("SectionTitle.formulas")) as any}
+              small={
+                <SplitText
+                  text={t("Formulas.label")}
+                  wordClass="formula-reveal-word"
+                />
+              }
+              title={
+                <SplitText
+                  text={t("SectionTitle.our")}
+                  wordClass="formula-reveal-word"
+                />
+              }
+              accent={
+                <SplitText
+                  text={t("SectionTitle.formulas")}
+                  wordClass="formula-reveal-word"
+                />
+              }
               className="font-primary uppercase leading-tight text-white text-6xl lg:text-7xl"
               smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-brand-yellow"
+              smallDevClass="justify-center"
             />
           </div>
 
-          {/* GRID */}
           <div className="flex flex-col gap-10 md:flex-row md:items-stretch md:justify-center lg:gap-8">
             {formules.map((pkg: FormulaData) => (
               <PackageCard
@@ -123,8 +115,6 @@ export default function Formules() {
     </ContainerWithBg>
   );
 }
-
-/* ---------------- PACKAGE CARD ---------------- */
 
 interface PackageCardProps {
   pkg: FormulaData;
@@ -149,7 +139,6 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
         }
       `}
     >
-      {/* POPULAR BADGE */}
       {popular && (
         <div className="absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-1/2 bg-brand-yellow px-5 py-1.5 shadow-lg">
           <span className="whitespace-nowrap text-[0.55rem] font-bold uppercase tracking-[0.3em] text-black">
@@ -158,7 +147,6 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
         </div>
       )}
 
-      {/* HEADER */}
       <div className="relative z-10 mb-8 text-center md:mb-10">
         <h3 className="mb-3 font-primary text-xl uppercase text-white sm:text-2xl lg:text-3xl">
           {pkg.name[locale]}
@@ -174,8 +162,7 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
         </span>
       </div>
 
-      {/* LIST */}
-      <div className="relative z-10 flex-grow">
+      <div className="relative z-10 grow">
         <ul className="space-y-4">
           {(pkg.descriptions[locale] || []).map((item: string) => (
             <li
@@ -204,7 +191,6 @@ function PackageCard({ pkg, locale, t }: PackageCardProps) {
         </ul>
       </div>
 
-      {/* BUTTON */}
       <div className="relative z-10 mt-10">
         <button
           className={`
