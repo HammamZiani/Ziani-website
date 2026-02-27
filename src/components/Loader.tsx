@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import Logo from "../assets/images/logo.webp";
 
@@ -7,19 +7,17 @@ interface LoaderProps {
 }
 
 export default function Loader({ onComplete }: LoaderProps) {
-  const [progress, setProgress] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const panelsRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // 1. Lock Scroll & Set Initial State
+    // 1. Lock Scroll & Initial State
     document.body.style.overflow = "hidden";
-    
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
-      // Entrance of UI elements
+      // UI Entrance
       tl.from(".loader-ui-item", {
         y: 20,
         opacity: 0,
@@ -28,65 +26,69 @@ export default function Loader({ onComplete }: LoaderProps) {
         ease: "power3.out",
       });
 
-      // 2. Simulated Progress Logic
-      const interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
+      // 2. Direct DOM Counter Animation (No React State Lag)
+      const counterObj = { value: 0 };
+      tl.to(counterObj, {
+        value: 100,
+        duration: 2.5,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          if (counterRef.current) {
+            counterRef.current.innerText =
+              Math.floor(counterObj.value).toString() + "%";
           }
-          const step = Math.floor(Math.random() * 15) + 1;
-          return Math.min(prev + step, 100);
-        });
-      }, 150);
+        },
+        // 3. Trigger Exit Sequence automatically
+        onComplete: () => playExit(),
+      });
 
-      return () => clearInterval(interval);
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // 3. Trigger Exit only when progress hits 100
-  useEffect(() => {
-    if (progress === 100) {
-      const exitCtx = gsap.context(() => {
+      const playExit = () => {
         const exitTl = gsap.timeline({
-          delay: 0.5,
-          onComplete: () => {
+          onStart: () => {
+            // UNLOCK SCROLL EARLY
             document.body.style.overflow = "auto";
-            onComplete(); // This tells the App/Hero we are officially done
-          }
+            // Start Hero reveal 300ms before panels finish
+            gsap.delayedCall(0.3, onComplete);
+          },
         });
 
         exitTl
           .to(".loader-ui-item", {
-            y: -20,
+            y: -30,
             opacity: 0,
             stagger: 0.05,
             duration: 0.5,
-            ease: "power2.in"
+            ease: "power2.in",
           })
-          .to(".loader-panel", {
-            scaleY: 0,
-            stagger: 0.1,
-            duration: 1.2,
-            ease: "expo.inOut",
-            transformOrigin: "top",
-          }, "-=0.2");
-      }, containerRef);
+          .to(
+            ".loader-panel",
+            {
+              scaleY: 0,
+              stagger: 0.1,
+              duration: 1.2,
+              ease: "expo.inOut",
+              transformOrigin: "top",
+            },
+            "-=0.3",
+          )
+          .set(containerRef.current, { display: "none" });
+      };
+    }, containerRef);
 
-      return () => exitCtx.revert();
-    }
-  }, [progress, onComplete]);
+    return () => {
+      ctx.revert();
+      // Safety unlock if component unmounts unexpectedly
+      document.body.style.overflow = "auto";
+    };
+  }, [onComplete]);
 
   return (
     <div
       ref={containerRef}
-      data-loader-active={progress < 100 ? "true" : "false"}
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden select-none"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden select-none bg-black"
     >
-      {/* Background Panels (Vertical Shutter) */}
-      <div ref={panelsRef} className="absolute inset-0 flex">
+      {/* Background Panels */}
+      <div className="absolute inset-0 flex">
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
@@ -95,40 +97,44 @@ export default function Loader({ onComplete }: LoaderProps) {
         ))}
       </div>
 
-      {/* UI Content */}
       <div className="relative z-10 flex flex-col items-center text-white">
         <div className="loader-ui-item mb-10">
-          <img 
-            src={Logo} 
-            alt="Logo" 
-            className="h-16 lg:h-20 w-auto object-contain grayscale brightness-125" 
+          <img
+            src={Logo}
+            alt="Logo"
+            className="h-16 lg:h-20 w-auto object-contain grayscale brightness-125"
           />
         </div>
 
         <div className="loader-ui-item flex flex-col items-center">
           <div className="overflow-hidden">
-            <span 
+            <span
               ref={counterRef}
               className="block text-[12vw] font-primary leading-none tabular-nums font-bold tracking-tighter italic text-brand-yellow"
             >
-              {progress}%
+              0%
             </span>
           </div>
-          
+
           <div className="mt-6 flex items-center gap-4">
-             <div className="w-8 h-px bg-white/20" />
-             <span className="text-[10px] uppercase tracking-[0.8em] text-white/50">
-               Wellness Rituals
-             </span>
-             <div className="w-8 h-px bg-white/20" />
+            <div className="w-8 h-px bg-white/20" />
+            <span className="text-[10px] uppercase tracking-[0.8em] text-white/50">
+              Wellness Rituals
+            </span>
+            <div className="w-8 h-px bg-white/20" />
           </div>
         </div>
 
-        {/* Decorative footer details */}
         <div className="loader-ui-item absolute -bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-12 opacity-30">
-           <span className="text-[9px] uppercase tracking-widest">Heritage Experience</span>
-           <span className="text-[9px] uppercase tracking-widest font-bold">●</span>
-           <span className="text-[9px] uppercase tracking-widest">Casablanca</span>
+          <span className="text-[9px] uppercase tracking-widest">
+            Heritage Experience
+          </span>
+          <span className="text-[9px] uppercase tracking-widest font-bold">
+            ●
+          </span>
+          <span className="text-[9px] uppercase tracking-widest">
+            Casablanca
+          </span>
         </div>
       </div>
     </div>
