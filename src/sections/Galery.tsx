@@ -75,36 +75,35 @@ const Gallery: React.FC = () => {
     <ContainerWithBg>
       <section
         ref={sectionRef}
-        className="relative h-screen w-full overflow-hidden flex flex-col justify-center gap-10"
+        className="relative h-screen w-full overflow-hidden flex flex-col justify-center gap-20"
       >
         <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
 
         {/* --- HEADER --- */}
-        <div className="relative z-10 px-6 md:px-12 lg:px-20 mb-6">
+
+        <div className="z-20 text-center">
           <SectionTitle
             small={
               <SplitText
                 text={t("Gallery.label")}
                 wordClass="gallery-reveal-word"
-                className=""
               />
             }
             title={
               <SplitText
                 text={t("SectionTitle.our")}
                 wordClass="gallery-reveal-word"
-                className="py-2 -my-2"
               />
             }
             accent={
               <SplitText
                 text={t("SectionTitle.gallery")}
                 wordClass="gallery-reveal-word"
-                className="py-2 -my-2"
               />
             }
-            className="font-primary uppercase leading-[0.75] tracking-tighter text-white text-6xl lg:text-7xl"
-            smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-brand-yellow mb-1 block"
+            className="font-primary uppercase leading-tight text-white text-6xl lg:text-7xl"
+            smallClass="text-[0.65rem] uppercase tracking-[0.3em] text-brand-yellow"
+            smallDevClass="justify-center"
           />
         </div>
 
@@ -119,8 +118,8 @@ const Gallery: React.FC = () => {
                 key={item.id}
                 className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_22%] min-w-0 px-4"
               >
-                <div className="gallery-card-reveal group relative aspect-[3/4] overflow-hidden transition-all duration-700 ease-out">
-                  <div className="absolute inset-0 z-10 border-[0px] group-hover:border-[16px] border-[#1e3a8a]/40 transition-all duration-500 ease-out pointer-events-none" />
+                <div className="gallery-card-reveal group relative aspect-3/4 overflow-hidden transition-all duration-700 ease-out">
+                  <div className="absolute inset-0 z-10 border-0 group-hover:border-16 border-[#1e3a8a]/40 transition-all duration-500 ease-out pointer-events-none" />
                   <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 border border-[#C6A75E]/50 transition-opacity duration-700 pointer-events-none shadow-[inset_0_0_50px_rgba(198,167,94,0.2)]" />
 
                   <img
@@ -129,11 +128,11 @@ const Gallery: React.FC = () => {
                     className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-110"
                   />
 
-                  <div className="absolute bottom-0 left-0 w-full p-6 z-30 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
+                  <div className="absolute bottom-0 left-0 w-full p-6 z-30 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-linear-to-t from-black/80 to-transparent">
                     <p className="text-[#C6A75E] text-[0.5rem] tracking-widest uppercase font-bold">
                       Ziani — 0{item.id}
                     </p>
-                    <div className="h-[1px] w-0 group-hover:w-12 bg-[#C6A75E] transition-all duration-700 mt-2" />
+                    <div className="h-px w-0 group-hover:w-12 bg-[#C6A75E] transition-all duration-700 mt-2" />
                   </div>
                 </div>
               </div>

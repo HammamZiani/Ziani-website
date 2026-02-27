@@ -22,7 +22,7 @@ export default function SectionTitle({
     <div>
       {small && (
         <div className={cn("flex items-center gap-2 mb-2 ", smallDevClass)}>
-          <div className="h-[0.5px] w-8 bg-brand-yellow " />
+          <div className="h-px w-12 bg-brand-yellow " />
           <p className={cn("", smallClass)}>{small}</p>
         </div>
       )}
