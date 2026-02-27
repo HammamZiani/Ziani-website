@@ -10,7 +10,7 @@ import Gallery from "./sections/Galery";
 import Loader from "./components/Loader";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // Function to trigger the loader "reload"
   const reloadLoader = () => {
     setIsLoading(true);
