@@ -117,6 +117,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "Booking.reserve": "Reserve",
     "Booking.moment": "Your Moment",
 
+    "Booking.title": "Booking",
     "Booking.name": "Name",
     "Booking.email": "Email",
     "Booking.service": "Service",
