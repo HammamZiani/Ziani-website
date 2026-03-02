@@ -3,9 +3,9 @@ import gsap from "gsap";
 import Certificate from "../components/Certificate";
 import ContainerWithBg from "../components/ContainerWithBg";
 import Logo from "../assets/images/logo.webp";
-import HeroImage from "../assets/images/bath1.jpeg";
 import { useI18n } from "../providers/useI18n";
 import SplitText from "../components/SplitText";
+import { Images } from "../lib/constants";
 
 interface HeroProps {
   isLoaded: boolean;
@@ -129,7 +129,7 @@ export default function Hero({ isLoaded }: HeroProps) {
             <div className="relative aspect-4/5 w-full max-w-90 sm:max-w-120 md:max-w-137.5 lg:max-w-none lg:w-[92%] xl:w-[88%] hero-image opacity-0">
               <div className="relative h-full w-full overflow-hidden shadow-[0_50px_120px_rgba(0,0,0,0.85)]">
                 <img
-                  src={HeroImage}
+                  src={Images.Hero_Right}
                   alt="Hammam Ziani"
                   className="h-full w-full object-cover transition-all duration-[3s] ease-out hover:scale-105"
                 />

@@ -8,9 +8,10 @@ import NosServices from "./sections/Services";
 import Speciality from "./sections/Speciality";
 import Gallery from "./sections/Galery";
 import Loader from "./components/Loader";
+import Booking from "./sections/Booking";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   // Function to trigger the loader "reload"
   const reloadLoader = () => {
     setIsLoading(true);
@@ -46,14 +47,15 @@ function App() {
       {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
 
       <main className="select-none relative">
-        <TopBar onLanguageChange={reloadLoader}/>
-        <Hero isLoaded={!isLoading}/>
+        <TopBar onLanguageChange={reloadLoader} />
+        <Hero isLoaded={!isLoading} />
         <About />
         <Speciality />
         <NosServices />
         <Formules />
         <BeautyCenter />
         <Gallery />
+        <Booking isLoaded={!isLoading}/>
       </main>
     </>
   );
