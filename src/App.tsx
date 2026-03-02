@@ -11,7 +11,7 @@ import Loader from "./components/Loader";
 import Booking from "./sections/Booking";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // Function to trigger the loader "reload"
   const reloadLoader = () => {
     setIsLoading(true);
